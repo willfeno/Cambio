@@ -1,0 +1,15 @@
+# Render Blueprint — one-click deploy of the Cambio server.
+# Render > New > Blueprint > connect this GitHub repo.
+# Free plan: 750 hrs/month, sleeps after ~15 min idle, first
+# connection after a sleep can take 30-50 seconds.
+services:
+  - type: web
+    name: cambio-server
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production

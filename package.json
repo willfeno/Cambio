@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.19.2","socket.io":"^4.7.5"},"description":"Cambio card game — public website with Node/Socket.IO server in the middle for online multiplayer (2-6 players, join by 5-character code).","engines":{"node":">=18"},"license":"MIT","main":"server.js","name":"cambio-website","scripts":{"start":"node server.js"},"version":"1.0.0"}
