@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cambio — Online Card Game</title><link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head><body>
+<header><h1>CAM<span>BIO</span></h1><p>Lowest score wins • 2–6 players online • Play solo vs the computer too</p></header>
+<main id="app" class="screen">
+
+<section id="home">
+ <div class="menu">
+  <button onclick="show('play')">▶ Play (vs computer)</button>
+  <button onclick="show('host')">Host Game</button>
+  <button onclick="show('join')">Join Game</button>
+  <button class="secondary" onclick="show('how')">How to Play</button>
+  <button class="secondary" onclick="show('settings')">Settings</button>
+ </div>
+ <p style="text-align:center;opacity:.85">Online: host creates a lobby, shares the 5-letter code, friends join from their own phone or computer. The server in the middle deals and keeps every hand hidden.</p>
+ <p id="server-note" style="text-align:center;font-size:13px;opacity:.8"></p>
+</section>
+
+<section id="play" class="hidden">
+ <h2>Play vs computer</h2>
+ <label>Your name <input id="solo-name" value="Will"></label>
+ <label>Computer players <select id="solo-count"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></label>
+ <label>AI difficulty <select id="solo-diff"><option value="easy" selected>Easy — casual, forgetful, slow snaps</option><option value="moderate">Moderate — remembers most, quicker snaps</option><option value="hard">Hard — perfect memory, very fast snaps</option></select></label>
+ <label>Card memory (reminds you what your cards are) <select id="solo-memory"><option value="on" selected>On</option><option value="off">Off — remember them yourself</option></select></label>
+ <div class="actions"><button onclick="startSolo()">Start game</button><button class="secondary" onclick="show('home')">Back</button></div>
+</section>
+
+<section id="host" class="hidden">
+ <h2>Host Game</h2>
+ <label>Your name <input id="host-name" value="Will"></label>
+ <label>Card memory — decided by the host, same for everyone <select id="host-memory"><option value="on" selected>On</option><option value="off">Off</option></select></label>
+ <div class="actions"><button onclick="createRoom()">Create lobby &amp; get code</button><button class="secondary" onclick="show('home')">Back</button></div>
+</section>
+
+<section id="join" class="hidden">
+ <h2>Join Game</h2>
+ <label>Your name <input id="join-name" value="Will"></label>
+ <label>Game code <input id="join-code" placeholder="e.g. K7Q2P" style="text-transform:uppercase"></label>
+ <div class="actions"><button onclick="joinRoom()">Join lobby</button><button class="secondary" onclick="show('home')">Back</button></div>
+ <p id="join-error" style="color:#ffb4b4"></p>
+</section>
+
+<section id="lobby" class="hidden">
+ <h2>Lobby — code: <span id="lobby-code" style="letter-spacing:4px"></span></h2>
+ <p>Share this code (or this page link + the code) with friends. They tap Join Game and enter it.</p>
+ <div class="actions"><button onclick="copyCode()">Copy code</button><button onclick="copyLink()">Copy invite link</button></div>
+ <div id="lobby-players"></div>
+ <p id="lobby-memory"></p>
+ <div class="actions"><button id="start-btn" onclick="startGame()">Start game</button><button class="secondary" onclick="show('home')">Leave</button></div>
+</section>
+
+<section id="how" class="hidden">
+ <h2>How to Play — Cambio</h2>
+ <p>54 cards (52 + 2 Jokers). Each player gets 4 cards face down in a square. Peek at your 2 nearest cards, put them back, and remember them. Lowest total wins.</p>
+ <ul>
+ <li><b>Your turn:</b> draw from the face-down pile, or take the top card of the discard pile. A discard-pile card must be swapped in — everyone saw it, so it can be snapped. A drawn card may replace one of yours (the replaced card goes face-up on the discard pile) or be put straight on the discard pile without swapping.</li>
+ <li><b>Discard pile:</b> starts empty. The first face-up card is one of player one's starting four.</li>
+ <li><b>Snap:</b> any player may snap one of their own or an opponent's cards onto the face-up discard if it is the same rank. Snapping your own leaves you with fewer cards. Snapping an opponent's lets you give them one of your cards. <b>Failed snap:</b> the card goes back, and you draw a face-down penalty card you cannot look at.</li>
+ <li><b>Powers — mandatory:</b> when you discard a Jack, Queen or King you MUST use its power, after about 4 seconds for snaps. King: look at any one card and swap any two cards. Queen: look at any one card. Jack: swap two cards.</li>
+ <li><b>Values:</b> Joker 0, Ace 1, numbers face value, Jacks, Queens and black Kings 10, red King −1.</li>
+ <li><b>Cambio:</b> on your turn, call Cambio when you are happy with your score. Your cards become immune — they cannot be swapped, looked at or snapped. Everyone else gets one more turn, then all cards turn over and lowest wins.</li>
+ <li><b>Tie-break:</b> on a tie, the player with the most cards wins. If card counts are equal, the player who did not call Cambio wins.</li>
+ <li><b>Going first:</b> before dealing, each player picks a random card from a fanned-out face-down deck. Lowest Cambio value wins and goes first (red King −1 best, J/Q/black King 10 worst). Tied players redraw.</li>
+ <li><b>Card memory:</b> in multiplayer the host decides on/off and it is the same for everyone. Solo vs the computer, you choose.</li>
+ <li><b>AI:</b> Easy is casual and forgetful with slow snaps; Moderate is smarter and quicker; Hard has perfect memory of every card it has seen and snaps very fast.</li>
+ </ul>
+ <div class="actions"><button class="secondary" onclick="show('home')">Back</button></div>
+</section>
+
+<section id="settings" class="hidden">
+ <h2>Settings</h2>
+ <label>Card pack</label><div id="pack-list"></div>
+ <label>Table felt</label><div id="felt-list"></div>
+ <p id="preview-line"></p>
+ <div class="actions"><button class="secondary" onclick="show('home')">Back</button></div>
+</section>
+
+<section id="game" class="hidden">
+ <div class="turn-strip" id="turn-strip"></div>
+ <div id="banner" class="banner hidden"></div>
+ <div id="table" class="table felt-green">
+  <div id="drawfirst" class="hidden"><h3>Draw to go first — tap a card</h3><div class="fan" id="fan"></div><div id="drawfirst-result"></div></div>
+  <div id="board">
+   <div class="piles">
+    <div><div class="pile draw" id="draw-pile" onclick="drawOrTake('draw')">DRAW<br><span id="deck-count"></span></div><div style="text-align:center;font-size:12px">Draw pile</div></div>
+    <div><div class="pile discard" id="discard-pile" onclick="drawOrTake('discard')">Empty</div><div style="text-align:center;font-size:12px">Discard pile</div></div>
+   </div>
+   <div id="players" class="players"></div>
+   <div class="actions" id="game-actions"></div>
+   <div class="log" id="game-log"></div>
+  </div>
+ </div>
+ <div class="actions"><button class="secondary" onclick="show('home')">Leave game</button></div>
+</section>
+
+</main>
+<script src="client.js"></script>
+</body></html>

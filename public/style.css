@@ -1,0 +1,45 @@
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0f3d2e;color:#fff}
+a{color:#ffd166}button{cursor:pointer;border:0;border-radius:10px;padding:12px 16px;font-size:16px;font-weight:700;background:#ffd166;color:#1a1a1a}
+button.secondary{background:#ffffff22;color:#fff;border:1px solid #ffffff55}button:disabled{opacity:.5}
+input,select{padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px;width:100%}
+header{padding:18px;text-align:center}h1{margin:0;font-size:42px;letter-spacing:2px}h1 span{color:#ffd166}
+.screen{max-width:900px;margin:0 auto;padding:16px}.hidden{display:none!important}
+.menu{display:grid;gap:12px;max-width:420px;margin:24px auto}.menu button{padding:18px;font-size:20px}
+.card-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+label{display:block;margin:12px 0 4px;font-weight:600}
+.felt-green{background:#0f3d2e}.felt-blue{background:#173a5e}.felt-burgundy{background:#5e1f2e}.felt-charcoal{background:#2b2f33}.felt-teal{background:#0f5257}
+.table{min-height:520px;border-radius:18px;padding:14px;position:relative}
+.turn-strip{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+.turn-strip div{padding:6px 10px;border-radius:20px;background:#00000033}
+.turn-strip .active{background:#ffd166;color:#000;font-weight:800}
+.banner{text-align:center;font-weight:800;padding:8px;border-radius:10px;background:#ffd166;color:#000;margin:8px 0}
+.banner.pulse{animation:pulse 1s infinite}@keyframes pulse{50%{transform:scale(1.03)}}
+.players{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.player{border:2px solid #ffffff33;border-radius:12px;padding:10px;position:relative;background:#00000022}
+.player.active{border-color:#ffd166;box-shadow:0 0 0 3px #ffd16688}
+.player.immune{border-color:#ff4d4d;box-shadow:0 0 0 3px #ff4d4d88}
+.player h3{margin:0 0 6px;font-size:15px}
+.hand{display:flex;gap:6px;flex-wrap:wrap}
+.card{width:52px;height:74px;border-radius:8px;background:#fff;color:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:18px;cursor:pointer;position:relative;transition:transform .35s,box-shadow .3s;user-select:none}
+.card.red{color:#c0392b}.card.small{width:42px;height:60px;font-size:15px}
+.card.back{background:repeating-linear-gradient(45deg,#1d4ed8,#1d4ed8 6px,#2563eb 6px,#2563eb 12px);color:#fff}
+.card.back.midnight{background:repeating-linear-gradient(45deg,#111827,#111827 6px,#312e81 6px,#312e81 12px)}
+.card.back.vintage{background:repeating-linear-gradient(45deg,#7c2d12,#7c2d12 6px,#92400e 6px,#92400e 12px)}
+.card.back.berry{background:repeating-linear-gradient(45deg,#831843,#831843 6px,#9d174d 6px,#9d174d 12px)}
+.card .rem{font-size:17px;background:#ffd166;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:#000}
+.card.lift{transform:translateY(-14px) rotate(-4deg);box-shadow:0 0 0 3px gold}
+.card.flying{transition:transform .7s ease,opacity .7s;transform:translateY(-30px) scale(1.1)}
+.cambio-stamp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5}
+.cambio-stamp span{background:gold;color:#b91c1c;border:4px solid #b91c1c;border-radius:12px;padding:6px 10px;font-size:26px;font-weight:900;transform:rotate(-12deg);animation:slam .3s}
+@keyframes slam{from{transform:scale(3) rotate(-12deg);opacity:0}to{transform:scale(1) rotate(-12deg);opacity:1}}
+.piles{display:flex;gap:16px;justify-content:center;align-items:center;margin:14px 0}
+.pile{width:64px;height:88px;border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:700}
+.pile.draw{background:#1d4ed8}.pile.discard{background:#fff;color:#111}
+.pile.glow{box-shadow:0 0 0 4px gold;animation:pulse 1s infinite}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.log{background:#00000033;border-radius:10px;padding:10px;font-size:14px;min-height:44px}
+.fan{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.fan .card{transform:rotate(-6deg)}.fan .card:nth-child(even){transform:rotate(6deg)}
+.preview{display:flex;gap:8px;align-items:center}
+.swatch{width:28px;height:28px;border-radius:50%;border:2px solid #fff}
+@media(max-width:600px){.card{width:44px;height:62px;font-size:15px}.players{grid-template-columns:1fr 1fr}h1{font-size:32px}}
