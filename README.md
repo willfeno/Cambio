@@ -1,11 +1,24 @@
 # Cambio — public website (online multiplayer)
 
-A standalone, deployable version of the Cambio card game. **Not the Muse artifact** — this is a separate project you own, for real hosting.
+A standalone, deployable version of the Cambio card game. **Now ported from the canonical Muse version** (the game as it plays in Muse), so the public site works exactly the same as the game Will built there — same look, same rules, same pace and animations. It is a separate project you own, for real hosting.
+
+## What changed in this rebuild (25 November 2026)
+
+- `public/index.html`, `public/style.css` and `public/client.js` are now the canonical game itself, split into three files: the light-cream theme, DM Serif Display / DM Sans, serif "Cambio" heading, icon-tile menu, Settings, Host options, pack/felt previews, detailed How to Play, and all animations (flying cards, bending flips, slow pace, turn banner, snap slam, CAMBIO! stamp) are byte-for-byte the canonical ones.
+- **The start bugs Will found testing with Alex are fixed:**
+  - Draw-to-go-first: one pick per player, and the game now shows "You picked X — waiting for Alex…" / "Waiting for <name> to pick" at every gate, with tied players redrawn from a fresh fan.
+  - Your hand is face-down in a 2×2 square (not face-up in a row), and you peek at your two nearest cards like the canonical game.
+  - Peek is per-player: each player taps "Got it — start round" for themselves; there is no longer a phase only the draw winner can advance, so the first turn is drawable immediately after peek/deal.
+- **Online AI:** empty seats are filled with computer players at the host's chosen difficulty (Easy / Moderate / Hard, Hard has perfect memory), and if a human guest leaves mid-game a computer player takes over their seat — matching the canonical rules.
+- **Online hands are face-down** to their owner except for legitimately peeked/spied cards, with memory-aid reminder labels only when the host turned memory on for the whole table.
+- **The server changed role:** `server.js` used to own the deck, hands and rules (a separate, simplified game). It is now a dumb relay only — it just forwards messages between the host's browser and the guests in the same 5-letter room, stores nothing, and never sees a hand. The host's browser runs the game, exactly as in the canonical version. That is what makes the two versions play identically.
+- The old authoritative server logic is **not** in this folder any more (a backup copy is kept outside the repo by Muse, not uploaded). If the relay ever needs to be reverted, ask Muse for it.
 
 ## How it works
 
-- `public/` — the game website (home: Play / Host Game / Join Game / How to Play / Settings, 2–6 players, 54-card deck, snaps, mandatory J/Q/K powers after a ~4s snap window, Cambio call, tie-break, draw-to-go-first, card-memory setting, Easy/Moderate/Hard AI solo play, card packs + felt colours).
-- `server.js` — a Node + Socket.IO server, the "server in the middle". It creates lobbies with a 5-character code, deals, holds every hand server-side, and only sends each player *their own* cards. It broadcasts the public state (turn, top discard, snap window) and validates moves. No PeerJS.
+- `public/` — the game website (home: Play / Join Game / Host Game / How to Play / Settings, 2–6 players, 54-card deck, draw-to-go-first, peek at 2 nearest cards, draw or take top discard — discard card must be swapped in, drawn card may be discarded straight — snaps, failed-snap penalty card, mandatory J/Q/K powers after a ~4s snap window, Cambio call with caller immunity, tie-break: lowest score, then most cards, then non-caller wins, card-memory setting, Easy/Moderate/Hard AI, card packs + felt colours with previews, game pace and sounds).
+- `server.js` — a Node + Socket.IO relay (see above). It creates no game state; it only routes messages by 5-letter room code. No PeerJS, no MQTT.
+- `public/config.js` — points the site at the Render server: `https://cambio-server-tukm.onrender.com`.
 - Solo play works without a server. Online play needs the server running.
 
 ## Deploy — free, in about 15 minutes
@@ -13,36 +26,25 @@ A standalone, deployable version of the Cambio card game. **Not the Muse artifac
 You need three free accounts (all free to start): **GitHub, Vercel, Render**.
 
 ### 1. Put the code on GitHub
-1. Create a new GitHub repository (e.g. `cambio-game`), public or private.
-2. Upload this whole folder, or from a terminal in this folder:
-   ```
-   git init && git add . && git commit -m "Cambio website"
-   git remote add origin https://github.com/YOURNAME/cambio-game.git
-   git push -u origin main
-   ```
+The repo is already `willfeno/Cambio`. Upload the changed files one at a time from your phone, as before, replacing the old versions:
+- `server.js`, `README.md`, `package.json`, `render.yaml`, `vercel.json` (root)
+- `public/index.html`, `public/client.js`, `public/style.css`, `public/config.js` (in `public/`)
+
+Do **not** upload `node_modules/` — Render installs dependencies itself from `package.json`.
 
 ### 2. Deploy the server on Render (free)
-1. Go to render.com → sign up / log in → **New → Blueprint** → connect the GitHub repo.
-2. `render.yaml` in this repo does the rest: Node, `npm install`, `npm start`, free plan.
-3. Wait for it to go live and copy its URL, e.g. `https://cambio-server.onrender.com`
-4. Check it: open `https://cambio-server.onrender.com/health` — you should see `{"ok":true}`.
+Already set up: `render.yaml` in this repo deploys it (Node, `npm install`, `npm start`, free plan). After the new files are pushed, Render redeploys automatically — same URL: `https://cambio-server-tukm.onrender.com`. Check it: open `https://cambio-server-tukm.onrender.com/health` — you should see `{"ok":true,"rooms":0}`.
 
 > **Free Render sleeps:** after ~15 minutes with no players, the free server sleeps. The first connection after a sleep can take **30–50 seconds** — the game shows a "server may be waking up" note while it waits. Paid Render (~$7/month) stays awake. This is the normal free-tier trade-off.
 
 ### 3. Deploy the website on Vercel (free)
-1. Go to vercel.com → sign up / log in → **Add New → Project** → import the same GitHub repo.
-2. Framework: leave as "Other". Root directory: `.` (the repo root). Vercel serves `public/` via `vercel.json`.
-3. Deploy. You get a free URL like `https://cambio-game.vercel.app`
+Already set up: Vercel serves `public/` via `vercel.json` from the same GitHub repo. After the new files are pushed, Vercel redeploys automatically — same URL: `https://cambio-woad.vercel.app`.
 
 ### 4. Point the website at the server
-Edit `public/config.js` and set:
-```js
-window.CAMBIO_SERVER = 'https://cambio-server.onrender.com';
-```
-Commit + push — Vercel redeploys automatically in a minute or two. (Or pass `?server=https://cambio-server.onrender.com` in the page URL to test without editing.)
+Already done: `public/config.js` is set to `https://cambio-server-tukm.onrender.com`. (Or pass `?server=https://cambio-server-tukm.onrender.com` in the page URL to test without editing.)
 
 ### 5. Test it
-Open the Vercel URL on your phone and on a computer (or two browsers). Host a game, copy the 5-letter code, join from the other device, and play a full round.
+Open the Vercel URL on your phone and on a computer (or two browsers). Host a game, copy the 5-letter code, join from the other device, and play a full round: draw to go first, peek, first turn, snap, a J/Q/K power, call Cambio, finish.
 
 ## A domain — optional
 You do **not** need a domain to start: the free `*.vercel.app` and `*.onrender.com` URLs work. If you want one later (e.g. `cambiogame.co.uk`, ~£10–15/year from Namecheap / Cloudflare / GoDaddy), buy it and in Vercel go to Settings → Domains → add it; Vercel tells you the DNS record to add. No code change needed.
