@@ -1,0 +1,797 @@
+
+      :root {
+        --bg: #f4f1ea;
+        --panel: #fffdf8;
+        --ink: #1d2420;
+        --ink-soft: #4c554f;
+        --line: #ddd5c3;
+        --accent: #b07d2b;
+        --accent-ink: #7c5514;
+        --felt: #0d4a2a;
+        --felt-deep: #08331c;
+        --felt-mid: #146638;
+        --card-face: #fffdf7;
+        --card-border: #b9b3a4;
+        --card-back: #7c2128;
+        --card-back-line: rgba(227,179,65,.25);
+        --card-back-border: #5d161c;
+        --joker-face: #fdf3d0;
+        --gold: #e3b341;
+        --card-red: #b3272d;
+        --card-ink: #1c1c22;
+        --danger: #b3272d;
+        --shadow: 0 10px 30px rgba(20, 30, 20, .14);
+        --cw: clamp(40px, 11vw, 54px);
+        --cw-you: clamp(50px, 14.5vw, 74px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101613;
+          --panel: #1a211c;
+          --ink: #eef2ec;
+          --ink-soft: #a9b4aa;
+          --line: #33413a;
+          --accent: #e3b341;
+          --accent-ink: #e9c46a;
+          --shadow: 0 10px 30px rgba(0,0,0,.45);
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        -webkit-tap-highlight-color: transparent;
+      }
+      button, [role="button"], select, input { min-height: 2.75rem; font: inherit; }
+      button { cursor: pointer; }
+      h1, h2, h3 { font-family: "DM Serif Display", Georgia, serif; font-weight: 400; margin: 0; }
+
+      .wrap { max-width: 880px; margin: 0 auto; padding: 20px 16px 48px; }
+      .view { display: none; }
+      .view.active { display: block; }
+
+      /* ---------- Home ---------- */
+      .hero { text-align: center; padding: 28px 0 8px; }
+      .hero .suits { font-size: 22px; letter-spacing: 10px; color: var(--accent); }
+      .hero .suits .r { color: var(--card-red); }
+      .hero h1 { font-size: clamp(52px, 13vw, 84px); line-height: 1; margin: 6px 0 4px; }
+      .hero p { color: var(--ink-soft); margin: 0 auto; max-width: 46ch; font-size: 17px; }
+      .menu { max-width: 430px; margin: 28px auto 0; display: grid; gap: 12px; }
+      .menu-btn {
+        display: flex; align-items: center; gap: 14px; text-align: left;
+        background: var(--panel); color: var(--ink);
+        border: 1px solid var(--line); border-radius: 14px;
+        padding: 14px 18px; min-height: 64px; box-shadow: var(--shadow);
+        transition: transform .08s ease, border-color .15s ease;
+      }
+      .menu-btn:active { transform: scale(.985); }
+      .menu-btn .ic {
+        flex: 0 0 42px; width: 42px; height: 42px; border-radius: 10px;
+        display: grid; place-items: center; font-size: 21px;
+        background: var(--felt); color: #fff;
+      }
+      .menu-btn.primary { background: var(--felt); border-color: var(--felt-deep); color: #fff; }
+      .menu-btn.primary .ic { background: rgba(255,255,255,.16); }
+      .menu-btn b { display: block; font-size: 18px; }
+      .menu-btn span { display: block; font-size: 13.5px; opacity: .75; margin-top: 1px; }
+      .home-note { text-align: center; color: var(--ink-soft); font-size: 13.5px; margin-top: 22px; }
+
+      /* ---------- Achievements (own screen, opened from the home menu) ---------- */
+      .ach-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+      .ach-item {
+        display: flex; align-items: center; gap: 14px; text-align: left;
+        background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
+        padding: 12px 16px; min-height: 60px;
+      }
+      .ach-item .medal {
+        flex: 0 0 38px; width: 38px; height: 38px; border-radius: 50%;
+        display: grid; place-items: center; font-size: 18px;
+        background: var(--bg); border: 1px solid var(--line); color: var(--ink-soft);
+      }
+      .ach-item b { display: block; font-size: 16px; }
+      .ach-item .ach-desc { display: block; font-size: 13px; color: var(--ink-soft); margin-top: 1px; }
+      /* Locked achievements sit greyed out until completed. */
+      .ach-item.locked { opacity: .5; }
+      .ach-item.locked .medal { filter: grayscale(1); }
+      .ach-item.done { border-color: var(--accent); }
+      .ach-item.done .medal { background: var(--accent); border-color: var(--accent); color: #241a02; }
+
+      /* ---------- Panels / forms ---------- */
+      .panel {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+        padding: 22px; box-shadow: var(--shadow); max-width: 560px; margin: 18px auto 0;
+      }
+      .panel h2 { font-size: 30px; margin-bottom: 6px; }
+      .panel .lede { color: var(--ink-soft); margin: 0 0 18px; }
+      label.f { display: block; font-weight: 700; font-size: 14px; margin: 16px 0 6px; }
+      label.f:first-of-type { margin-top: 0; }
+      input[type="text"], select {
+        width: 100%; padding: 10px 12px; border-radius: 10px;
+        border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+      }
+      input.code { text-transform: uppercase; letter-spacing: 6px; font-weight: 700; font-size: 20px; text-align: center; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        border-radius: 12px; border: 1px solid var(--line);
+        background: var(--panel); color: var(--ink);
+        padding: 10px 18px; font-weight: 700; min-height: 48px;
+      }
+      .btn.primary { background: var(--felt); border-color: var(--felt-deep); color: #fff; }
+      .btn.gold { background: var(--gold); border-color: #c1912a; color: #231a02; }
+      .btn.ghost { background: transparent; box-shadow: none; }
+      .btn:disabled { opacity: .45; cursor: default; }
+      .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+      .btn-row .btn { flex: 1 1 auto; }
+      /* On/off settings (Sounds, Card memory aid): a horizontal
+         toggle switch like a light switch — tap to slide the thumb
+         between Off (left, grey) and On (right, green). The switch
+         is a button whose value is "on"/"off", the same contract
+         the old drop-downs had. */
+      .toggle-switch {
+        display: inline-flex; align-items: center; gap: 12px;
+        background: none; border: none; padding: 4px 2px;
+        min-height: 44px; cursor: pointer; color: var(--ink);
+      }
+      .toggle-switch .ts-track {
+        position: relative; flex: 0 0 auto; width: 64px; height: 34px; border-radius: 999px;
+        background: var(--line); border: 1px solid var(--ink-soft);
+        transition: background .18s ease;
+      }
+      .toggle-switch .ts-thumb {
+        position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%;
+        background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4);
+        transition: transform .18s ease;
+      }
+      .toggle-switch[aria-checked="true"] .ts-track { background: var(--felt); border-color: var(--felt-deep); }
+      .toggle-switch[aria-checked="true"] .ts-thumb { transform: translateX(30px); }
+      .toggle-switch .ts-text { font-weight: 700; font-size: 15px; min-width: 30px; text-align: left; }
+      .err { color: var(--danger); font-weight: 600; font-size: 14px; min-height: 20px; margin-top: 8px; }
+      .ok { color: var(--accent-ink); font-weight: 600; font-size: 14px; min-height: 20px; margin-top: 8px; }
+      .backlink {
+        background: none; border: none; color: var(--accent-ink); font-weight: 700;
+        padding: 8px 4px; min-height: 44px;
+      }
+      .room-code {
+        font-family: "DM Serif Display", Georgia, serif; font-size: 52px; letter-spacing: 10px;
+        text-align: center; padding: 14px 0 4px; color: var(--accent-ink);
+      }
+      .seat-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+      .seat-list li {
+        display: flex; justify-content: space-between; align-items: center;
+        border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: var(--bg);
+      }
+      .seat-list .tag { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+
+      /* ---------- Rules ---------- */
+      .rules-body { max-width: 640px; margin: 0 auto; }
+      .rules-body h2 { font-size: 34px; margin: 10px 0 4px; }
+      .rules-section { margin-top: 24px; }
+      .rules-section h3 { font-size: 21px; margin-bottom: 6px; color: var(--accent-ink); }
+      .rules-section p, .rules-section li { color: var(--ink); line-height: 1.55; font-size: 16px; }
+      .rules-section ul { margin: 6px 0; padding-left: 22px; }
+      .value-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+      .value-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+      .value-table td:last-child { text-align: right; font-weight: 700; }
+
+      /* Card packs & felt colours — chosen in Settings, applied to this
+         player's own screen in practice and multiplayer alike. */
+      body[data-pack="midnight"], .pv-pack[data-pack="midnight"] { --card-face: #232d3d; --card-ink: #f4ecd2; --card-red: #ff8a75; --card-border: #4a5a74; --card-back: #101f38; --card-back-line: rgba(180,200,235,.28); --card-back-border: #0a1626; --joker-face: #3a3320; }
+      body[data-pack="vintage"], .pv-pack[data-pack="vintage"] { --card-face: #f3e5c0; --card-ink: #3a2a18; --card-red: #9c2b23; --card-border: #b49b62; --card-back: #5a3d22; --card-back-line: rgba(243,229,192,.30); --card-back-border: #3d2812; --joker-face: #ffe9a8; }
+      body[data-pack="berry"], .pv-pack[data-pack="berry"] { --card-face: #fdf0f3; --card-ink: #2b1620; --card-red: #c21847; --card-border: #d9a7b5; --card-back: #6d1a3a; --card-back-line: rgba(255,205,220,.28); --card-back-border: #470f26; --joker-face: #ffe3ee; }
+      body[data-pack="forest"], .pv-pack[data-pack="forest"] { --card-face: #eef5e6; --card-ink: #1e2b18; --card-red: #b3272d; --card-border: #9db38a; --card-back: #274d1e; --card-back-line: rgba(220,240,200,.28); --card-back-border: #17300f; --joker-face: #e6f0c8; }
+      body[data-pack="sunset"], .pv-pack[data-pack="sunset"] { --card-face: #fff3e0; --card-ink: #331f0d; --card-red: #c33d12; --card-border: #d9a86c; --card-back: #8a3b12; --card-back-line: rgba(255,220,170,.30); --card-back-border: #5c2608; --joker-face: #ffe9b8; }
+      body[data-pack="ocean"], .pv-pack[data-pack="ocean"] { --card-face: #e8f4fb; --card-ink: #10222e; --card-red: #c21847; --card-border: #93bcd4; --card-back: #12598c; --card-back-line: rgba(200,235,255,.30); --card-back-border: #0a3a5c; --joker-face: #d8f0e8; }
+      body[data-pack="slate"], .pv-pack[data-pack="slate"] { --card-face: #eceff1; --card-ink: #16181a; --card-red: #8f1d22; --card-border: #8d979e; --card-back: #22262a; --card-back-line: rgba(230,238,242,.25); --card-back-border: #0c0e10; --joker-face: #f2e3b3; }
+      body[data-pack="imperial"], .pv-pack[data-pack="imperial"] { --card-face: #1c1a17; --card-ink: #e9c46a; --card-red: #e07856; --card-border: #8a6d2f; --card-back: #0d0b09; --card-back-line: rgba(227,179,65,.35); --card-back-border: #000000; --joker-face: #2e2410; }
+      body[data-pack="citrus"], .pv-pack[data-pack="citrus"] { --card-face: #fbfbe8; --card-ink: #23260f; --card-red: #c8500f; --card-border: #b9bd7a; --card-back: #5f6b16; --card-back-line: rgba(245,248,200,.32); --card-back-border: #3d460c; --joker-face: #fdf3a0; }
+      body[data-felt="blue"], .pv-felt[data-felt="blue"] { --felt: #0b3a5c; --felt-deep: #062740; --felt-mid: #12598c; }
+      body[data-felt="burgundy"], .pv-felt[data-felt="burgundy"] { --felt: #5c1220; --felt-deep: #3d0b15; --felt-mid: #7e1c2e; }
+      body[data-felt="charcoal"], .pv-felt[data-felt="charcoal"] { --felt: #333a37; --felt-deep: #1f2422; --felt-mid: #49534e; }
+      body[data-felt="teal"], .pv-felt[data-felt="teal"] { --felt: #0b4f4a; --felt-deep: #06332f; --felt-mid: #12736b; }
+      body[data-felt="plum"], .pv-felt[data-felt="plum"] { --felt: #46204d; --felt-deep: #2c1231; --felt-mid: #5f2f68; }
+      body[data-felt="walnut"], .pv-felt[data-felt="walnut"] { --felt: #4a3220; --felt-deep: #2e1e11; --felt-mid: #654628; }
+      body[data-felt="olive"], .pv-felt[data-felt="olive"] { --felt: #454d1c; --felt-deep: #2b3110; --felt-mid: #5c6627; }
+      body[data-felt="navy"], .pv-felt[data-felt="navy"] { --felt: #16294d; --felt-deep: #0c1830; --felt-mid: #213c6e; }
+      body[data-felt="ochre"], .pv-felt[data-felt="ochre"] { --felt: #6b5518; --felt-deep: #453708; --felt-mid: #8a6f22; }
+      .appearance-preview {
+        margin-top: 14px; border-radius: 14px; padding: 14px 12px; text-align: center; color: #fff;
+        background: radial-gradient(ellipse at 50% 38%, var(--felt-mid) 0%, var(--felt) 55%, var(--felt-deep) 100%);
+        border: 6px solid #5a3d22;
+      }
+      .appearance-preview .ap-label { font-size: 11.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; opacity: .85; margin-bottom: 10px; }
+      .appearance-preview .ap-cards { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+      .appearance-preview .card { width: 46px; height: 65px; }
+      .appearance-preview .card .big { font-size: 24px; }
+      .appearance-preview .card .corner { font-size: 11px; }
+      /* Per-option previews beside each pack / felt select: a sample
+         card in that pack, a swatch of that felt. Tap one to choose it. */
+      .option-previews { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 2px; }
+      .opt-preview {
+        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        padding: 7px 8px 6px; border: 2px solid var(--line); border-radius: 10px;
+        background: var(--panel); color: var(--ink-soft);
+        font-size: 11.5px; font-weight: 700; line-height: 1.2; min-height: 0; cursor: pointer;
+      }
+      .opt-preview.selected { border-color: var(--accent); color: var(--ink); box-shadow: 0 0 0 1px var(--accent); }
+      .mini-row { display: flex; gap: 4px; }
+      .mini-card {
+        position: relative; width: 30px; height: 42px; border-radius: 4px;
+        border: 1px solid var(--card-border); background: var(--card-face); color: var(--card-ink);
+        display: grid; place-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.25); font-weight: 700;
+      }
+      .mini-card.red { color: var(--card-red); }
+      .mini-card .mini-big { font-size: 17px; line-height: 1; }
+      .mini-card .mini-corner { position: absolute; top: 1px; left: 3px; font-size: 9px; line-height: 1; }
+      .mini-card.mini-back {
+        background: repeating-linear-gradient(45deg, var(--card-back-line) 0 5px, transparent 5px 10px), var(--card-back);
+        border-color: var(--card-back-border);
+      }
+      .felt-swatch {
+        width: 52px; height: 36px; border-radius: 7px; border: 3px solid #5a3d22;
+        background: radial-gradient(ellipse at 50% 38%, var(--felt-mid) 0%, var(--felt) 55%, var(--felt-deep) 100%);
+      }
+
+      /* ---------- Game table ---------- */
+      .game-top {
+        display: flex; align-items: center; justify-content: space-between; gap: 8px;
+        flex-wrap: wrap; margin-bottom: 10px;
+      }
+      .game-top .round-label { font-weight: 700; }
+      .totals { display: flex; gap: 6px; flex-wrap: wrap; }
+      .totals .chip {
+        font-size: 13px; font-weight: 700; border: 1px solid var(--line);
+        background: var(--panel); border-radius: 999px; padding: 5px 11px;
+      }
+      .totals .chip.leader { border-color: var(--accent); color: var(--accent-ink); }
+      .felt {
+        background: radial-gradient(ellipse at 50% 38%, var(--felt-mid) 0%, var(--felt) 55%, var(--felt-deep) 100%);
+        border: 10px solid #5a3d22;
+        border-radius: 26px; padding: 12px 10px 16px; color: #fff;
+        perspective: 900px;
+        box-shadow: var(--shadow);
+      }
+      /* (There is no turn-order strip on the felt: the 1st / 2nd /
+         3rd … badge on every player's name shows the clockwise
+         order on its own, so the strip was removed.) */
+      .opponents { display: flex; justify-content: space-around; gap: 6px; flex-wrap: wrap; }
+      /* Every seat ALWAYS carries a 3px outline — transparent when it
+         is not your turn — so the gold turn ring switching on and off
+         can never change a seat's size or push the other seats around.
+         (The cambio-immune ring below is the same 3px for the same
+         reason.) The turn pulse is inset-only: the old pulse spread a
+         shadow 12px OUTSIDE the seat, over the neighbouring seats and
+         the edge of the felt, which read as the whole table shuffling
+         every time the turn changed. */
+      .player-zone { text-align: center; padding: 6px 5px 3px; border-radius: 12px; position: relative; outline: 3px solid transparent; }
+      .player-zone.active { outline: 3px solid var(--gold); background: rgba(255,255,255,.06); animation: turnPulse 1.15s ease-in-out infinite; }
+      @keyframes turnPulse {
+        0%, 100% { box-shadow: inset 0 0 0 2px rgba(227,179,65,.9), inset 0 0 18px rgba(227,179,65,.28); }
+        50% { box-shadow: inset 0 0 0 2px rgba(227,179,65,.35), inset 0 0 6px rgba(227,179,65,.08); }
+      }
+      /* Cambio called: the caller's cards are immune for the rest of the
+         round — a shield glow round the whole hand makes that obvious. */
+      .player-zone.cambio-immune {
+        outline: 3px solid var(--gold);
+        background: rgba(227,179,65,.16);
+        box-shadow: 0 0 0 4px rgba(179,39,45,.55), 0 0 24px rgba(227,179,65,.7), inset 0 0 0 2px rgba(255,255,255,.35);
+      }
+      /* Comic-book CAMBIO! burst: slams down onto the caller's cards
+         once, then stays stamped there for the rest of the round. */
+      @keyframes cambioSlamAnim {
+        0% { transform: translate(-50%, -50%) rotate(-24deg) scale(3.4); opacity: 0; }
+        55% { transform: translate(-50%, -50%) rotate(-7deg) scale(.9); opacity: 1; }
+        75% { transform: translate(-50%, -50%) rotate(-11deg) scale(1.1); opacity: 1; }
+        100% { transform: translate(-50%, -50%) rotate(-10deg) scale(1); opacity: 1; }
+      }
+      .cambio-stamp {
+        position: absolute; left: 50%; top: 56%; z-index: 6; pointer-events: none;
+        transform: translate(-50%, -50%) rotate(-10deg);
+        background: var(--gold); color: #b3272d;
+        font-family: "Arial Black", "DM Sans", system-ui, sans-serif;
+        font-weight: 900; font-style: italic; letter-spacing: .02em;
+        font-size: clamp(19px, 5.2vw, 28px); line-height: 1;
+        padding: 16px 20px; text-shadow: 1.5px 1.5px 0 #fff3c4;
+        clip-path: polygon(50% 0%, 59% 12%, 72% 4%, 78% 16%, 92% 12%, 93% 26%, 100% 32%, 95% 45%, 100% 58%, 90% 64%, 93% 79%, 80% 80%, 76% 94%, 63% 88%, 52% 100%, 41% 89%, 27% 96%, 23% 82%, 9% 85%, 10% 70%, 0% 62%, 6% 49%, 0% 36%, 11% 30%, 9% 15%, 23% 17%, 28% 4%, 40% 11%);
+        filter: drop-shadow(0 5px 7px rgba(0,0,0,.5));
+        animation: cambioSlamAnim .6s ease-out both;
+      }
+      .cambio-stamp.settled { animation: none; }
+      .you-zone .cambio-stamp { font-size: clamp(23px, 6vw, 34px); padding: 20px 24px; }
+      .immune-badge {
+        display: inline-block; margin-top: 7px; padding: 3px 10px; border-radius: 999px;
+        background: #b3272d; color: #fff; font-size: 11.5px; font-weight: 800;
+        letter-spacing: .05em; text-transform: uppercase; line-height: 1.35;
+      }
+      /* The Turn / Your turn badge FLOATS on the top-right corner of
+         the seat instead of sitting inline after the player's name.
+         Inline, it was added and removed from the name line every
+         time the turn changed, making that seat wider (and the
+         player's name jump sideways) and shoving every other seat
+         along the row. Floating, it can appear and disappear without
+         moving anything at all. */
+      .turn-badge {
+        position: absolute; top: -9px; right: -2px; z-index: 7;
+        padding: 2px 9px; border-radius: 999px;
+        background: var(--gold); color: #231a02; font-size: 11px; font-weight: 800;
+        letter-spacing: .07em; text-transform: uppercase; white-space: nowrap;
+        box-shadow: 0 2px 6px rgba(0,0,0,.45);
+        animation: badgeBounce .55s ease-in-out infinite alternate;
+      }
+      /* Turn-order position (1st / 2nd / 3rd …) shown on every
+         player's name, so the clockwise order around the felt can
+         be read straight off the seats themselves. */
+      .order-badge {
+        display: inline-block; margin-right: 6px; padding: 2px 7px; border-radius: 999px;
+        background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.4);
+        color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .03em;
+        vertical-align: 2px; white-space: nowrap;
+      }
+      .player-zone.active .order-badge { background: var(--gold); border-color: var(--gold); color: #231a02; }
+      @keyframes badgeBounce { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+      .memory-chip {
+        font-size: 12.5px; font-weight: 700; border: 1px dashed var(--line);
+        border-radius: 999px; padding: 5px 11px; color: var(--ink-soft); background: var(--panel);
+      }
+      /* card movement: cards visibly travel across the table */
+      /* Pick-ups fly in a long, readable arc from the pile they came
+         from, arcing up over the table before settling. */
+      @keyframes drawFromDeckAnim {
+        0% { transform: translate(-195px, -72px) rotate(-15deg) scale(.76); opacity: .3; }
+        55% { transform: translate(-88px, -58px) rotate(-6deg) scale(.94); opacity: 1; }
+        100% { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; }
+      }
+      @keyframes drawFromDiscardAnim {
+        0% { transform: translate(195px, -72px) rotate(15deg) scale(.76); opacity: .3; }
+        55% { transform: translate(88px, -58px) rotate(6deg) scale(.94); opacity: 1; }
+        100% { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; }
+      }
+      /* Put-downs sweep across the table from the player's hand area
+         and land on the discard pile with a small settle bounce. */
+      @keyframes discardLandAnim {
+        0% { transform: translate(-125px, 58px) rotate(11deg) scale(.8); opacity: .35; }
+        55% { transform: translate(-30px, -16px) rotate(-3deg) scale(1.08); opacity: 1; }
+        80% { transform: translate(0, 3px) rotate(1deg) scale(.98); opacity: 1; }
+        100% { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; }
+      }
+      @keyframes swapInAnim {
+        0% { transform: translateY(-95px) rotate(-5deg) scale(1.18); box-shadow: 0 18px 26px rgba(0,0,0,.5); opacity: .45; }
+        60% { transform: translateY(5px) rotate(1deg) scale(1.02); opacity: 1; }
+        100% { transform: translateY(0) rotate(0) scale(1); }
+      }
+      /* Turning a card over to look at it: a 3D flip that bends —
+         the card curls as it comes round (skew + rotateX mid-flip,
+         lifting with shadow and a light catch), then flattens out. */
+      @keyframes flipBendAnim {
+        0% { transform: perspective(700px) rotateY(88deg) rotateX(8deg) skewY(5deg) scale(1.03); filter: brightness(.78); box-shadow: -10px 12px 20px rgba(0,0,0,.42); }
+        35% { transform: perspective(700px) rotateY(42deg) rotateX(-5deg) skewY(-4deg) scale(1.13); filter: brightness(1.12); box-shadow: 0 18px 26px rgba(0,0,0,.48); }
+        65% { transform: perspective(700px) rotateY(-16deg) rotateX(2deg) skewY(2deg) scale(1.06); filter: brightness(1.04); }
+        100% { transform: perspective(700px) rotateY(0deg) rotateX(0deg) skewY(0deg) scale(1); filter: brightness(1); }
+      }
+      .card.anim-flip { animation: flipBendAnim .95s ease-in-out; transform-origin: 18% 50%; }
+      /* Power clarity: a card being looked at (Queen / King) is lifted
+         and tilted side to side as if being examined, with a gold ring
+         — everyone can see WHICH card is being peeked at, while its
+         face stays hidden from all but the player using the power. */
+      @keyframes fxLookAnim {
+        0% { transform: translateY(0) rotate(0deg) scale(1); }
+        25% { transform: translateY(-17px) rotate(-7deg) scale(1.08); }
+        50% { transform: translateY(-20px) rotate(5deg) scale(1.1); }
+        75% { transform: translateY(-16px) rotate(-4deg) scale(1.07); }
+        100% { transform: translateY(-18px) rotate(0deg) scale(1.08); }
+      }
+      .card.fx-look {
+        animation: fxLookAnim 2.4s ease-in-out, snapFlashAnim 1.1s ease-out;
+        outline: 3px solid var(--gold); outline-offset: 2px; z-index: 3;
+      }
+      /* Gold CIRCLE around a card being looked at (Queen / King),
+         so every player at the table can see exactly which card
+         was chosen, plus a small "Looked at" tag above it. */
+      .card.fx-look::before {
+        content: ""; position: absolute; inset: -13px -11px; z-index: 5;
+        border: 4px solid var(--gold); border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(227,179,65,.35), 0 0 22px rgba(227,179,65,.85), inset 0 0 14px rgba(227,179,65,.35);
+        pointer-events: none;
+        animation: lookRingPulse .8s ease-in-out infinite alternate;
+      }
+      @keyframes lookRingPulse {
+        from { transform: scale(.96); opacity: .85; }
+        to { transform: scale(1.05); opacity: 1; }
+      }
+      .look-tag {
+        position: absolute; left: 50%; top: -34px; transform: translateX(-50%); z-index: 6;
+        background: var(--gold); color: #231a02; font-size: 10.5px; font-weight: 800;
+        letter-spacing: .03em; white-space: nowrap; padding: 3px 8px; border-radius: 999px;
+        box-shadow: 0 3px 8px rgba(0,0,0,.5); pointer-events: none; line-height: 1.25;
+      }
+      /* Power pop-up: names the player and the power they are
+         using, so everyone knows who they are waiting for. */
+      .power-popup {
+        position: absolute; left: 50%; top: 64px; transform: translateX(-50%); z-index: 30;
+        background: var(--gold); color: #231a02; font-weight: 800; font-size: 16.5px;
+        padding: 10px 20px; border-radius: 999px; border: 2px solid #c1912a;
+        box-shadow: 0 10px 26px rgba(0,0,0,.5); white-space: nowrap; max-width: 92%;
+        overflow: hidden; text-overflow: ellipsis; pointer-events: none;
+        animation: powerPopIn .35s cubic-bezier(.2,1.6,.4,1) both;
+      }
+      @keyframes powerPopIn {
+        from { transform: translateX(-50%) translateY(-14px) scale(.8); opacity: 0; }
+        to { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+      }
+      @media (max-width: 520px) { .power-popup { font-size: 14.5px; top: 58px; padding: 8px 14px; } }
+      /* Power clarity: the two cards swapped by a Jack / King both
+         lift, rock and glow together so the pair that changed places
+         is unmistakable. */
+      @keyframes fxSwapAnim {
+        0% { transform: translateY(0) rotate(0deg) scale(1); }
+        30% { transform: translateY(-22px) rotate(-5deg) scale(1.13); }
+        55% { transform: translateY(-22px) rotate(5deg) scale(1.13); }
+        80% { transform: translateY(-8px) rotate(-2deg) scale(1.05); }
+        100% { transform: translateY(0) rotate(0deg) scale(1); }
+      }
+      .card.fx-swap {
+        animation: fxSwapAnim 1.3s ease-in-out, snapFlashAnim 1s ease-out;
+        outline: 3px solid var(--gold); outline-offset: 2px; z-index: 3;
+      }
+      @keyframes snapFlashAnim {
+        0% { box-shadow: 0 0 0 0 rgba(227,179,65,.95); }
+        100% { box-shadow: 0 0 0 16px rgba(227,179,65,0); }
+      }
+      @keyframes deckPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(227,179,65,.7); }
+        50% { box-shadow: 0 0 0 10px rgba(227,179,65,0); }
+      }
+      .card.anim-draw-deck { animation: drawFromDeckAnim 1.05s ease-out; }
+      .card.anim-draw-discard { animation: drawFromDiscardAnim 1.05s ease-out; }
+      .card.anim-discard { animation: discardLandAnim 1s ease-out, snapFlashAnim .7s ease-out; }
+      .card.anim-swapin { animation: swapInAnim .95s ease-out; }
+      /* dealing: cards fly in one-by-one (delay set inline per card) */
+      @keyframes dealInAnim {
+        0% { transform: translate(95px, -115px) rotate(15deg) scale(.58); opacity: 0; }
+        60% { opacity: 1; }
+        100% { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; }
+      }
+      .card.anim-deal { animation: dealInAnim .9s ease-out both; }
+      /* snapping: the snapped card slams onto the pile with a gold burst */
+      @keyframes snapSlamAnim {
+        0% { transform: translateY(-95px) scale(1.3) rotate(-11deg); opacity: .45; }
+        55% { transform: translateY(3px) scale(.95) rotate(1deg); opacity: 1; }
+        100% { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+      }
+      .card.anim-snap { animation: snapSlamAnim .95s ease-out, snapFlashAnim .8s ease-out; }
+      /* ---------- Draw to go first ---------- */
+      .first-draw {
+        background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.20);
+        border-radius: 16px; padding: 14px 12px 12px; margin: 0 0 12px; text-align: center;
+      }
+      .first-draw h3 { font-size: 22px; margin: 0 0 4px; color: #fff; }
+      .first-draw p { margin: 4px auto; max-width: 58ch; font-size: 13.5px; line-height: 1.45; opacity: .94; }
+      .first-draw .fd-status { font-weight: 800; font-size: 15px; opacity: 1; }
+      .fan { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 12px auto 6px; max-width: 560px; }
+      .fan .card { width: 38px; height: 54px; border-radius: 6px; }
+      .fan .card.taken { opacity: .32; outline: none; cursor: default; }
+      .fan .card.mine { outline: 3px solid var(--gold); outline-offset: 1px; opacity: 1; }
+      .fd-picks { list-style: none; margin: 10px auto 0; padding: 0; display: grid; gap: 6px; max-width: 480px; text-align: left; }
+      .fd-picks li {
+        display: flex; justify-content: space-between; align-items: center; gap: 10px;
+        background: rgba(255,255,255,.09); border-radius: 9px; padding: 7px 11px; font-size: 14px;
+      }
+      .fd-picks li.winner { background: var(--gold); color: #231a02; font-weight: 800; }
+      .fd-picks .fd-card { font-weight: 700; white-space: nowrap; }
+      .pile .card.tappable { animation: deckPulse 1.1s ease-in-out infinite; }
+      /* ---------- Wheel spinner (online games: who goes first) ---------- */
+      .wheel-panel {
+        background: rgba(0,0,0,.24); border: 1px solid rgba(255,255,255,.20);
+        border-radius: 16px; padding: 14px 12px 12px; margin: 0 0 12px; text-align: center;
+      }
+      .wheel-panel h3 { font-size: 22px; margin: 0 0 4px; color: #fff; }
+      .wheel-panel p { margin: 4px auto; max-width: 58ch; font-size: 13.5px; line-height: 1.45; opacity: .94; }
+      .wheel-panel .fd-status { font-weight: 800; font-size: 15px; opacity: 1; }
+      .wheel-wrap { position: relative; width: min(300px, 78vw); margin: 12px auto 8px; }
+      .wheel-disc {
+        position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%;
+        border: 7px solid #5a3d22; box-shadow: 0 10px 26px rgba(0,0,0,.45);
+        overflow: hidden; will-change: transform;
+      }
+      .wheel-label { position: absolute; inset: 0; pointer-events: none; }
+      .wheel-label span {
+        display: block; text-align: center; padding-top: 16px; padding-left: 18%; padding-right: 18%;
+        font-weight: 800; font-size: 13.5px; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.65);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .wheel-pointer {
+        position: absolute; left: 50%; top: -7px; transform: translateX(-50%); z-index: 3;
+        width: 0; height: 0; border-left: 13px solid transparent; border-right: 13px solid transparent;
+        border-top: 22px solid var(--gold); filter: drop-shadow(0 2px 2px rgba(0,0,0,.5));
+      }
+      .wheel-hub {
+        position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2;
+        width: 54px; height: 54px; border-radius: 50%; background: var(--gold); color: #231a02;
+        display: grid; place-items: center; font-size: 24px; border: 3px solid #5a3d22;
+        box-shadow: 0 3px 8px rgba(0,0,0,.4);
+      }
+      .hint { color: var(--ink-soft); font-size: 13.5px; line-height: 1.45; margin: 6px 0 0; }
+      .player-zone .pname { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+      /* "· thinking…" / "· called Cambio!" goes on its OWN line under
+         the name, never inline after it — inline, it widened the seat
+         every time a bot started or stopped thinking. */
+      .player-zone .pname .thinking { display: block; font-weight: 400; font-size: 12px; opacity: .8; line-height: 1.25; }
+      /* Opponent name blocks reserve BOTH lines (name + the thinking
+         line) whether or not anything is on the second line, so a bot
+         starting to think — or the turn moving on — never grows the
+         seat and pushes that player's cards, or the rows below,
+         up or down. */
+      .opponents .player-zone .pname { min-height: 35px; }
+      .hand { display: grid; grid-template-columns: repeat(2, var(--cw)); gap: 5px; justify-content: center; }
+      .hand.you { grid-template-columns: repeat(2, var(--cw-you)); gap: 6px; }
+      .hand.wide { grid-template-columns: repeat(3, var(--cw)); }
+      .hand.you.wide { grid-template-columns: repeat(3, var(--cw-you)); }
+      .card {
+        position: relative; width: var(--cw); height: calc(var(--cw) * 1.42);
+        border-radius: 7px; border: 1px solid var(--card-border);
+        background: var(--card-face); color: var(--card-ink);
+        display: grid; place-items: center; user-select: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,.35);
+        font-weight: 700;
+      }
+      .hand.you .card { width: var(--cw-you); height: calc(var(--cw-you) * 1.42); border-radius: 9px; }
+      .card .big { font-size: calc(var(--cw) * .52); line-height: 1; }
+      .hand.you .card .big { font-size: calc(var(--cw-you) * .52); }
+      .card .corner { position: absolute; top: 3px; left: 5px; font-size: 12px; line-height: 1.05; text-align: center; }
+      .hand.you .card .corner { font-size: 15px; }
+      .card.red { color: var(--card-red); }
+      .card.joker { color: #6d4c00; background: var(--joker-face); }
+      body[data-pack="midnight"] .card.joker { color: #e9c46a; }
+      .card.back {
+        background:
+          repeating-linear-gradient(45deg, var(--card-back-line) 0 6px, transparent 6px 12px),
+          var(--card-back);
+        border-color: var(--card-back-border); color: transparent;
+      }
+      .card.empty { background: rgba(255,255,255,.08); border: 1.5px dashed rgba(255,255,255,.35); box-shadow: none; }
+      .card.tappable { cursor: pointer; outline: 3px solid var(--gold); outline-offset: 1px; }
+      /* Two-tap snap: first tap lifts the chosen card off the table,
+         still face down, clearly marked as selected. Second tap on
+         the same card actually snaps it. */
+      .card.snap-armed {
+        transform: translateY(-16px) scale(1.07);
+        outline: 4px solid var(--gold); outline-offset: 2px;
+        box-shadow: 0 16px 24px rgba(0,0,0,.55), 0 0 0 5px rgba(227,179,65,.35);
+        z-index: 4;
+      }
+      .card.snap-armed::after {
+        content: "Selected — tap again to snap";
+        position: absolute; left: 50%; bottom: -22px; transform: translateX(-50%);
+        background: var(--gold); color: #231a02; font-size: 10px; font-weight: 800;
+        letter-spacing: .02em; white-space: nowrap; padding: 3px 7px; border-radius: 999px;
+        box-shadow: 0 2px 6px rgba(0,0,0,.45); pointer-events: none; line-height: 1.2;
+      }
+      .hand.you .card.snap-armed::after { font-size: 10.5px; bottom: -24px; }
+      /* Your hand with a fixed slot on each side: Call Cambio on
+         the LEFT, Use power on the RIGHT — beside your cards, not
+         beneath them, so on a phone neither button ever needs
+         scrolling down to. Both slots are ALWAYS present at a
+         fixed width (equal on both sides, so your cards stay
+         centred) whether or not their button is showing, so a
+         button appearing or disappearing can never shift your
+         cards or anything else on the table. */
+      .you-layout {
+        display: grid; grid-template-columns: 92px 1fr 92px;
+        align-items: center; gap: 8px;
+        max-width: 600px; margin: 0 auto;
+      }
+      .you-side {
+        display: flex; align-items: center; justify-content: center;
+        min-height: 52px; min-width: 0;
+      }
+      .you-side-left { justify-content: flex-end; }
+      .you-side-right { justify-content: flex-start; }
+      /* Call Cambio — compact side button in the left slot. */
+      .side-cambio-btn {
+        background: var(--gold); border: 2px solid #c1912a; color: #231a02;
+        font-weight: 800; font-size: 14px; line-height: 1.25; text-align: center;
+        border-radius: 14px; padding: 10px 6px;
+        width: 100%; max-width: 92px; min-height: 52px; cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,.4), 0 0 0 4px rgba(227,179,65,.22);
+        overflow-wrap: break-word;
+      }
+      .side-cambio-btn:active { transform: scale(.97); }
+      /* Greyed-out state — both side buttons stay visible in their
+         slots at all times, but grey and inert until they are
+         actually available: Call Cambio only lights up gold on
+         your turn when you can call it, Use power only when you
+         have just put down a Jack / Queen / King. The grey sits
+         flat on the felt (no glow, no bounce) so the gold active
+         state is unmistakable at a glance. */
+      .side-cambio-btn.is-unavailable, .use-power-btn.is-unavailable {
+        background: rgba(255,255,255,.13); border-color: rgba(255,255,255,.30);
+        color: rgba(255,255,255,.52); box-shadow: none;
+        animation: none; cursor: default;
+      }
+      .side-cambio-btn.is-unavailable:active, .use-power-btn.is-unavailable:active { transform: none; }
+      /* Use power button — sits in the right-hand slot beside your
+         own cards and must be pressed before a Queen / Jack / King
+         power can be used. Sized for the slot: full slot width,
+         text wraps onto two lines instead of the old wide pill. */
+      .use-power-btn {
+        position: relative; overflow: hidden; isolation: isolate;
+        background: var(--gold); border: 2px solid #c1912a; color: #231a02;
+        font-weight: 800; font-size: 13.5px; line-height: 1.25; text-align: center; border-radius: 14px;
+        padding: 10px 6px; min-height: 52px; width: 100%; max-width: 92px; min-width: 0; cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,.4), 0 0 0 4px rgba(227,179,65,.25);
+        animation: badgeBounce .55s ease-in-out infinite alternate;
+        overflow-wrap: break-word;
+      }
+      .use-power-btn:active { transform: scale(.97); }
+      /* One-versus-one only: Use power and Do not use power stack
+         in the same right-hand slot as a clear pair of choices.
+         Tables of three or more never show the skip button —
+         powers are mandatory there. */
+      .power-choice-stack { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 92px; }
+      .power-choice-stack .use-power-btn { min-height: 40px; padding: 7px 5px; font-size: 12.5px; animation: none; }
+      .skip-power-btn {
+        background: #fffdf8; border: 2px solid rgba(255,255,255,.65); color: #1d2420;
+        font-weight: 700; font-size: 12.5px; line-height: 1.25; text-align: center;
+        border-radius: 14px; padding: 7px 5px; min-height: 40px; width: 100%;
+        cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.35); overflow-wrap: break-word;
+      }
+      .skip-power-btn:active { transform: scale(.97); }
+      .use-power-btn.timing { cursor: default; animation: none; }
+      .use-power-btn:disabled { opacity: 1; }
+      .use-power-btn .up-label { position: relative; z-index: 2; }
+      /* 10-second countdown, translucent on top of the button:
+         a dark sweep that fills the button as time runs out,
+         with a big translucent seconds number over it. */
+      .use-power-btn .up-sweep {
+        position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+        background: rgba(20, 24, 20, .38); z-index: 0; pointer-events: none;
+      }
+      .use-power-btn .up-count {
+        position: absolute; inset: 0; z-index: 1; display: grid; place-items: center;
+        font-size: 32px; font-weight: 900; color: rgba(255,255,255,.55);
+        pointer-events: none; line-height: 1;
+      }
+      .card .known-chip {
+        position: absolute; bottom: 3px; right: 3px; background: var(--gold); color: #231a02;
+        font-size: 14px; font-weight: 800; border-radius: 6px; padding: 2px 5px; line-height: 1.25;
+        box-shadow: 0 1px 4px rgba(0,0,0,.4); letter-spacing: .01em; pointer-events: none;
+      }
+      /* Memory aid only: a red King is the one card where colour
+         matters (-1 vs 10), so its reminder label is red. Every
+         other card's reminder stays in black text. */
+      .card .known-chip.red-king { color: #b3272d; }
+      /* Your own cards are bigger, so your reminder is bigger too —
+         the number is the bit you need to read at a glance. */
+      .hand.you .card .known-chip { font-size: 17.5px; padding: 3px 7px; border-radius: 7px; }
+      /* Fixed table layout: once the game has begun, nothing on
+         the felt changes size or position except the cards that
+         are meant to move (picked up, put down, swapped, looked
+         at). The piles sit in a fixed 3-column grid — draw pile,
+         drawn-card spot, discard pile — and the middle column is
+         ALWAYS reserved, even when no card has been drawn, so
+         picking a card up can never push the two piles sideways
+         or shuffle them around on a phone screen.
+         The row's height is FIXED (not just a minimum), and every
+         label — the two pile labels and the "You drew / Marco
+         took from discard" label under the drawn card — hangs
+         BELOW its card, absolutely positioned and centred, never
+         in the layout flow. Before, the drawn label sat in the
+         flow inside the narrow middle column and wrapped onto a
+         different number of lines for every wording ("You drew"
+         took two lines, "Marco took from discard" four), and the
+         discard label changing to "Discard — empty" did the
+         same — each change grew or shrank the whole row by a few
+         pixels and nudged your own cards up and down every time
+         anybody drew a card, worst in five- and six-player games
+         on a phone. Now nothing said under the piles can move
+         anything. */
+      html, body { overflow-x: clip; }
+      .felt { position: relative; }
+      .piles {
+        display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: start;
+        gap: 8px; width: 100%; max-width: 430px; margin: 12px auto 4px;
+        height: calc(var(--cw) * 1.42 + 38px);
+      }
+      .pile { text-align: center; justify-self: center; width: var(--cw); position: relative; }
+      .pile .plabel {
+        position: absolute; top: calc(var(--cw) * 1.42 + 6px); left: 50%; transform: translateX(-50%);
+        width: max-content; max-width: 150px; text-align: center;
+        font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; opacity: .85;
+      }
+      .pile .card { width: var(--cw); height: calc(var(--cw) * 1.42); }
+      .pile .card.tappable { cursor: pointer; }
+      .drawn-spot { justify-self: center; width: var(--cw); height: calc(var(--cw) * 1.42); position: relative; }
+      .opponents { min-height: calc(var(--cw) * 2.84 + 50px); align-items: flex-start; }
+      /* Each opponent seat is a FIXED width set by the cards, never by
+         the words in its name line: two card columns plus the gaps and
+         padding (three columns when a hand has grown past four cards).
+         Before, a seat was as wide as its name line happened to be, so
+         when the Turn badge and "thinking…" appeared on the player
+         whose turn it was, that seat swelled, the space-around row
+         re-spread itself, and every other player shuffled sideways —
+         worst on a phone with four players, where the row is nearly
+         full. Now nothing about whose turn it is can change any
+         seat's width, so nobody else moves. */
+      .opponents .player-zone { flex: 0 0 calc(var(--cw) * 2 + 17px); }
+      .opponents .player-zone:has(> .hand.wide) { flex-basis: calc(var(--cw) * 3 + 22px); }
+      .you-zone { margin-top: 6px; }
+      .card.empty .empty-label {
+        font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+        color: rgba(255,255,255,.55); text-align: center; padding: 0 4px; line-height: 1.3;
+      }
+      .status {
+        /* Reserved height (about three lines on a phone) so a
+           longer or shorter message never pushes the controls
+           or the table up and down. */
+        min-height: 58px; display: flex; align-items: center; justify-content: center;
+        text-align: center; font-size: 16px; font-weight: 600;
+        margin: 10px auto 4px; max-width: 60ch;
+      }
+      .status.snap { color: var(--gold); }
+      .controls { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 8px; min-height: 52px; }
+      .controls .btn { box-shadow: 0 3px 8px rgba(0,0,0,.3); }
+      .drawn-spot { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 0; min-width: 60px; }
+      /* The drawn card's label hangs below the card exactly like
+         the pile labels — absolutely positioned, centred, out of
+         the layout flow — so its wording can never change the
+         height of the piles row or shift your own cards. */
+      .drawn-spot .dlabel {
+        position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+        width: max-content; max-width: 170px; text-align: center;
+        font-size: 13px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; opacity: .9;
+      }
+
+      /* ---------- Modal ---------- */
+      .overlay {
+        position: fixed; inset: 0; background: rgba(8, 14, 10, .66);
+        display: none; align-items: center; justify-content: center; padding: 16px; z-index: 40;
+      }
+      .overlay.open { display: flex; }
+      .modal {
+        background: var(--panel); color: var(--ink); border-radius: 18px; padding: 24px;
+        max-width: 520px; width: 100%; max-height: 86vh; overflow: auto; box-shadow: var(--shadow);
+      }
+      .modal h2 { font-size: 28px; margin-bottom: 4px; }
+      /* Winner fireworks: a full-screen canvas sits behind the
+         scoreboard modal (above the dimmed table) and bursts
+         around it. It never blocks taps. */
+      #fireworks-canvas {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        pointer-events: none; z-index: 0;
+      }
+      .overlay .modal { position: relative; z-index: 1; }
+      .score-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      .score-table th, .score-table td { padding: 8px 8px; border-bottom: 1px solid var(--line); text-align: left; font-size: 15px; }
+      .score-table td.num, .score-table th.num { text-align: right; }
+      .score-table tr.winner td { font-weight: 700; color: var(--accent-ink); }
+      .mini-cards { font-size: 13px; color: var(--ink-soft); }
+      @media (max-width: 520px) {
+        :root {
+          --cw: clamp(36px, 10.5vw, 46px);
+          --cw-you: clamp(46px, 13.5vw, 60px);
+        }
+        .wrap { padding: 14px 10px 36px; }
+        .felt { border-width: 6px; padding: 10px 6px 14px; border-radius: 20px; }
+        .opponents { gap: 4px; }
+        .player-zone { padding: 5px 3px 2px; }
+        .player-zone .pname { font-size: 12.5px; }
+        .piles { gap: 6px; margin: 10px auto 2px; }
+        .pile .plabel { font-size: 11px; }
+        .status { font-size: 15px; }
+        .room-code { font-size: 42px; letter-spacing: 7px; }
+        /* Phone: slimmer side slots so your cards keep their size
+           and the whole row still fits the felt with no sideways
+           scroll — even with a wide (5–6 card) hand. */
+        .you-layout { grid-template-columns: 68px 1fr 68px; gap: 5px; }
+        .side-cambio-btn { font-size: 12.5px; padding: 8px 4px; max-width: 68px; border-radius: 12px; }
+        .use-power-btn { font-size: 12px; padding: 8px 4px; max-width: 68px; border-radius: 12px; }
+        .power-choice-stack { max-width: 68px; }
+        .power-choice-stack .use-power-btn { font-size: 11.5px; padding: 6px 3px; border-radius: 12px; }
+        .skip-power-btn { font-size: 11.5px; padding: 6px 3px; border-radius: 12px; }
+        .use-power-btn .up-count { font-size: 26px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; animation: none !important; }
+      }
+    
