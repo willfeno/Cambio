@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Play Cambio Online | Free Cambio Card Game</title>
+    <meta name="description" content="Play Cambio online for free — the memory card game where you peek at two cards, swap, snap and call Cambio to finish with the lowest score. Play against computer players or host a game for 2–6 friends, no install or account needed." />
+    <link rel="canonical" href="https://www.cambiogame.co.uk/" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cambio" />
+    <meta property="og:title" content="Play Cambio Online | Free Cambio Card Game" />
+    <meta property="og:description" content="Play Cambio online for free — peek at two cards, swap, snap and call Cambio to finish with the lowest score. Play against computer players or host a game for 2–6 friends." />
+    <meta property="og:url" content="https://www.cambiogame.co.uk/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Play Cambio Online | Free Cambio Card Game" />
+    <meta name="twitter:description" content="Play Cambio online for free — peek at two cards, swap, snap and call Cambio to finish with the lowest score." />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Cambio",
+      "url": "https://www.cambiogame.co.uk/",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+      "description": "Play Cambio online for free — the memory card game where you peek at two cards, swap, snap and call Cambio to finish with the lowest score. Play against computer players or host a game for 2–6 friends, no install or account needed."
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="wrap">
+
+      <!-- ================= HOME ================= -->
+      <section class="view active" id="view-home">
+        <div class="hero">
+          <div class="suits">♠ <span class="r">♥</span> ♦ <span class="r">♣</span></div>
+          <h1>Cambio</h1>
+          <p>The memory card game of low scores, sneaky swaps and well-timed calls. Play practice games against computer opponents and chase the lowest score.</p>
+        </div>
+        <nav class="menu" aria-label="Main menu">
+          <button class="menu-btn primary" id="btn-play">
+            <span class="ic">▶</span>
+            <span><b>Play</b><span>Quick practice game against computer players</span></span>
+          </button>
+          <button class="menu-btn" id="btn-join">
+            <span class="ic">♠</span>
+            <span><b>Join Game</b><span>Enter a friend's table code to join their game</span></span>
+          </button>
+          <button class="menu-btn" id="btn-host">
+            <span class="ic">♥</span>
+            <span><b>Host Game</b><span>Create a table and share the code with friends</span></span>
+          </button>
+          <button class="menu-btn" id="btn-rules">
+            <span class="ic">♦</span>
+            <span><b>How to Play</b><span>The rules, card values and powers</span></span>
+          </button>
+          <button class="menu-btn" id="btn-settings">
+            <span class="ic">♣</span>
+            <span><b>Settings</b><span>Name, opponents, difficulty and pace</span></span>
+          </button>
+          <button class="menu-btn" id="btn-achievements">
+            <span class="ic">★</span>
+            <span><b>Achievements</b><span>Practice-game challenges to complete</span></span>
+          </button>
+        </nav>
+        <p class="home-note">Works on phone and computer — no install, no account.</p>
+      </section>
+
+      <!-- ================= PLAY SETUP ================= -->
+      <section class="view" id="view-playsetup">
+        <button class="backlink" data-back="home">← Back</button>
+        <div class="panel">
+          <h2>Practice game</h2>
+          <p class="lede">Set up your table against computer players, then start.</p>
+          <div class="btn-row" style="margin-top:0;margin-bottom:20px">
+            <button class="btn gold" id="play-start">Start game</button>
+          </div>
+          <label class="f" for="play-bots">Computer players</label>
+          <select id="play-bots">
+            <option value="1">1 computer player (2 at the table)</option>
+            <option value="2">2 computer players (3 at the table)</option>
+            <option value="3" selected>3 computer players (4 at the table)</option>
+            <option value="4">4 computer players (5 at the table)</option>
+            <option value="5">5 computer players (6 at the table)</option>
+          </select>
+          <label class="f" for="play-diff">Computer skill</label>
+          <select id="play-diff">
+            <option value="easy">Easy — good memory, quicker snaps</option>
+            <option value="moderate">Moderate — strong memory, quick snaps, sharper powers</option>
+            <option value="hard">Hard — perfect memory, fastest snaps, targets the leader</option>
+          </select>
+          <!-- No drop-downs for pack / felt here either: the tappable
+               pictures below are the only chooser, as in Settings.
+               The hidden inputs hold the current value where the
+               preview tiles and the start-game wiring read it. -->
+          <label class="f">Card pack design</label>
+          <input type="hidden" id="play-pack" value="classic" />
+          <div class="option-previews pack-previews" data-for="play-pack" aria-label="Card pack previews — tap a pack to choose it"></div>
+          <label class="f">Table felt colour</label>
+          <input type="hidden" id="play-felt" value="green" />
+          <div class="option-previews felt-previews" data-for="play-felt" aria-label="Felt colour previews — tap a colour to choose it"></div>
+          <div class="appearance-preview" aria-label="Preview of your chosen card pack on your chosen felt colour">
+            <div class="ap-label">Table preview — <span class="ap-current"></span></div>
+            <div class="ap-cards">
+              <div class="card back"></div>
+              <div class="card red"><span class="corner">A</span><span class="big">♥</span></div>
+              <div class="card"><span class="corner">K</span><span class="big">♠</span></div>
+              <div class="card joker"><span class="corner">★</span><span class="big">★</span></div>
+            </div>
+          </div>
+          <label class="f">Card memory aid</label>
+          <button type="button" class="toggle-switch" id="play-memory" role="switch" aria-checked="true" aria-label="Card memory aid" value="on"><span class="ts-track"><span class="ts-thumb"></span></span><span class="ts-text">On</span></button>
+          <p class="hint">With the memory aid on, cards you've peeked at, swapped in or spied on show a small reminder label. Turn it off and there's no reminder — it's down to your own memory.</p>
+        </div>
+      </section>
+
+      <!-- ================= JOIN ================= -->
+      <section class="view" id="view-join">
+        <button class="backlink" data-back="home">← Back</button>
+        <div class="panel">
+          <h2>Join a game</h2>
+          <p class="lede">Type in the 5-letter table code your host shared with you. You'll wait in their lobby until they start the game. The host sets the card memory aid for the whole table, so everyone plays by the same setting.</p>
+          <label class="f" for="join-code">Table code</label>
+          <input type="text" class="code" id="join-code" maxlength="5" placeholder="–––––" autocomplete="off" />
+          <div class="err" id="join-err"></div>
+          <div class="btn-row">
+            <button class="btn primary" id="join-go">Join table</button>
+            <button class="btn gold" id="join-play-local">Play vs computer instead</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= GUEST LOBBY ================= -->
+      <section class="view" id="view-lobby">
+        <div class="panel">
+          <h2>You're in the lobby</h2>
+          <p class="lede">Table code <b id="guest-lobby-code"></b>. The host will start the game when everyone has joined — this screen will take you straight to the table.</p>
+          <p class="hint" id="guest-memory-note"></p>
+          <ul class="seat-list" id="guest-seats"></ul>
+          <div class="btn-row">
+            <button class="btn" id="guest-leave">Leave lobby</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= HOST ================= -->
+      <section class="view" id="view-host">
+        <button class="backlink" data-back="home">← Back</button>
+        <div class="panel" id="host-form">
+          <h2>Host a game</h2>
+          <p class="lede">Create a table and you'll get a 5-letter code. Share the code with your friends — they open Cambio, tap Join Game and type it in. As host you set the card memory aid for the whole table, so it's the same for every player.</p>
+          <label class="f" for="host-size">Table size</label>
+          <select id="host-size">
+            <option value="2">2 players</option>
+            <option value="3">3 players</option>
+            <option value="4" selected>4 players</option>
+            <option value="5">5 players</option>
+            <option value="6">6 players</option>
+          </select>
+          <label class="f" for="host-diff">Computer skill (for any empty seats)</label>
+          <select id="host-diff">
+            <option value="easy" selected>Easy — good memory, quicker snaps</option>
+            <option value="moderate">Moderate — strong memory, quick snaps, sharper powers</option>
+            <option value="hard">Hard — perfect memory, fastest snaps, targets the leader</option>
+          </select>
+          <!-- No drop-downs for pack / felt here either: the tappable
+               pictures below are the only chooser, as in Settings.
+               The hidden inputs hold the current value where the
+               preview tiles and the create-table wiring read it. -->
+          <label class="f">Card pack design (your screen)</label>
+          <input type="hidden" id="host-pack" value="classic" />
+          <div class="option-previews pack-previews" data-for="host-pack" aria-label="Card pack previews — tap a pack to choose it"></div>
+          <label class="f">Table felt colour (your screen)</label>
+          <input type="hidden" id="host-felt" value="green" />
+          <div class="option-previews felt-previews" data-for="host-felt" aria-label="Felt colour previews — tap a colour to choose it"></div>
+          <div class="appearance-preview" aria-label="Preview of your chosen card pack on your chosen felt colour">
+            <div class="ap-label">Table preview — <span class="ap-current"></span></div>
+            <div class="ap-cards">
+              <div class="card back"></div>
+              <div class="card red"><span class="corner">A</span><span class="big">♥</span></div>
+              <div class="card"><span class="corner">K</span><span class="big">♠</span></div>
+              <div class="card joker"><span class="corner">★</span><span class="big">★</span></div>
+            </div>
+          </div>
+          <label class="f">Card memory aid (whole table)</label>
+          <button type="button" class="toggle-switch" id="host-memory" role="switch" aria-checked="true" aria-label="Card memory aid (whole table)" value="on"><span class="ts-track"><span class="ts-thumb"></span></span><span class="ts-text">On</span></button>
+          <p class="hint">With the memory aid on, cards a player has peeked at, swapped in or spied on show them a small reminder label. Turn it off for the full memory test.</p>
+          <div class="err" id="host-err"></div>
+          <div class="btn-row">
+            <button class="btn primary" id="host-create">Create table</button>
+            <button class="btn gold" id="host-play-local">Play vs computer instead</button>
+          </div>
+        </div>
+        <div class="panel" id="host-lobby" hidden>
+          <h2>Your lobby</h2>
+          <p class="lede">Share this code with the people you want at your table. They open Cambio, tap Join Game and type it in.</p>
+          <div class="room-code" id="lobby-code">–––––</div>
+          <ul class="seat-list" id="lobby-seats"></ul>
+          <p class="lede" style="margin-top:14px">Any seats still empty when you start are filled by computer players.</p>
+          <label class="f">Card memory aid (whole table)</label>
+          <button type="button" class="toggle-switch" id="lobby-memory" role="switch" aria-checked="true" aria-label="Card memory aid (whole table)" value="on"><span class="ts-track"><span class="ts-thumb"></span></span><span class="ts-text">On</span></button>
+          <div class="btn-row">
+            <button class="btn" id="lobby-copy">Copy invite</button>
+            <button class="btn gold" id="lobby-start">Start game</button>
+          </div>
+          <div class="ok" id="lobby-msg"></div>
+        </div>
+      </section>
+
+      <!-- ================= RULES ================= -->
+      <section class="view" id="view-rules">
+        <button class="backlink" id="rules-back">← Back</button>
+        <div class="rules-body">
+          <h2>How to Play</h2>
+          <div id="rules-content"></div>
+        </div>
+      </section>
+
+      <!-- ================= SETTINGS ================= -->
+      <section class="view" id="view-settings">
+        <button class="backlink" data-back="home">← Back</button>
+        <div class="panel">
+          <h2>Settings</h2>
+          <p class="lede">These apply to practice games against the computer. Your name isn't set here — you'll be asked for it each time you start a game, host a table or join one.</p>
+          <label class="f" for="set-bots">Practice opponents</label>
+          <select id="set-bots">
+            <option value="1">1 computer player (2 at the table)</option>
+            <option value="2">2 computer players (3 at the table)</option>
+            <option value="3" selected>3 computer players (4 at the table)</option>
+            <option value="4">4 computer players (5 at the table)</option>
+            <option value="5">5 computer players (6 at the table)</option>
+          </select>
+          <label class="f" for="set-diff">Computer skill</label>
+          <select id="set-diff">
+            <option value="easy">Easy — good memory, quicker snaps</option>
+            <option value="moderate">Moderate — strong memory, quick snaps, sharper powers</option>
+            <option value="hard">Hard — perfect memory, fastest snaps, targets the leader</option>
+          </select>
+          <label class="f" for="set-speed">Game pace</label>
+          <select id="set-speed">
+            <option value="1.35">Relaxed</option>
+            <option value="1">Normal</option>
+            <option value="0.6">Fast</option>
+          </select>
+          <label class="f">Sounds</label>
+          <button type="button" class="toggle-switch" id="set-sound" role="switch" aria-checked="true" aria-label="Sounds" value="on"><span class="ts-track"><span class="ts-thumb"></span></span><span class="ts-text">On</span></button>
+          <!-- No drop-downs for pack / felt in Settings: the tappable
+               pictures below are the only chooser. The hidden inputs
+               hold the current value in the place the preview tiles
+               and the settings wiring already read and write, so
+               tapping a picture still selects it exactly as before. -->
+          <label class="f">Card pack design</label>
+          <input type="hidden" id="set-pack" value="classic" />
+          <div class="option-previews pack-previews" data-for="set-pack" aria-label="Card pack previews — tap a pack to choose it"></div>
+          <label class="f">Table felt colour</label>
+          <input type="hidden" id="set-felt" value="green" />
+          <div class="option-previews felt-previews" data-for="set-felt" aria-label="Felt colour previews — tap a colour to choose it"></div>
+          <div class="appearance-preview" id="appearance-preview" aria-label="Preview of your card pack and felt colour">
+            <div class="ap-label">Your table preview — <span class="ap-current"></span></div>
+            <div class="ap-cards">
+              <div class="card back"></div>
+              <div class="card red"><span class="corner">A</span><span class="big">♥</span></div>
+              <div class="card"><span class="corner">K</span><span class="big">♠</span></div>
+              <div class="card joker"><span class="corner">★</span><span class="big">★</span></div>
+            </div>
+          </div>
+          <p class="hint">Your pack and felt change how the table looks on your screen.</p>
+          <label class="f">Card memory aid</label>
+          <button type="button" class="toggle-switch" id="set-memory" role="switch" aria-checked="true" aria-label="Card memory aid" value="on"><span class="ts-track"><span class="ts-thumb"></span></span><span class="ts-text">On</span></button>
+          <p class="hint">Applies to practice games against the computer — you choose it for yourself.</p>
+          <div class="btn-row">
+            <button class="btn primary" data-back="home">Done</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= ACHIEVEMENTS ================= -->
+      <section class="view" id="view-achievements">
+        <button class="backlink" data-back="home">← Back</button>
+        <div class="panel">
+          <h2>Achievements</h2>
+          <p class="lede">Practice-game challenges. Each one lights up gold once you've completed it.</p>
+          <ul class="ach-list" id="ach-list"></ul>
+        </div>
+      </section>
+
+      <!-- ================= GAME ================= -->
+      <section class="view" id="view-game">
+        <div class="game-top">
+          <span class="round-label" id="round-label">Round 1</span>
+          <span class="totals" id="totals"></span>
+          <span class="memory-chip" id="memory-chip"></span>
+          <span>
+            <button class="btn ghost" id="game-rules" style="min-height:44px">Rules</button>
+            <button class="btn ghost" id="game-quit" style="min-height:44px">Leave table</button>
+          </span>
+        </div>
+        <div class="felt">
+          <div class="power-popup" id="power-popup" role="status" hidden></div>
+          <div class="wheel-panel" id="wheel-panel" hidden></div>
+          <div class="opponents" id="opponents"></div>
+          <div class="piles" id="piles">
+            <div class="pile">
+              <div id="deck-pile"></div>
+              <div class="plabel">Draw pile</div>
+            </div>
+            <div class="drawn-spot" id="drawn-spot"></div>
+            <div class="pile">
+              <div id="discard-pile"></div>
+              <div class="plabel" id="discard-label">Discard</div>
+            </div>
+          </div>
+          <div class="player-zone you-zone" id="you-zone">
+            <div class="pname" id="you-name"></div>
+            <div class="you-layout">
+              <div class="you-side you-side-left" id="you-left" aria-live="polite"></div>
+              <div class="hand you" id="you-hand"></div>
+              <div class="you-side you-side-right" id="you-right" aria-live="polite"></div>
+            </div>
+          </div>
+          <p class="status" id="status"></p>
+          <div class="controls" id="controls"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= SCORE MODAL ================= -->
+    <div class="overlay" id="score-overlay">
+      <canvas id="fireworks-canvas" aria-hidden="true"></canvas>
+      <div class="modal">
+        <h2 id="score-title">Round over</h2>
+        <p id="score-sub" style="color:var(--ink-soft);margin:4px 0 0"></p>
+        <table class="score-table">
+          <thead><tr><th>Pos</th><th>Player</th><th class="num">This round</th><th class="num">Rounds won</th></tr></thead>
+          <tbody id="score-body"></tbody>
+        </table>
+        <div class="btn-row" id="score-btns">
+          <button class="btn" id="score-home">Back to menu</button>
+          <button class="btn gold" id="score-next">Next round</button>
+        </div>
+        <p id="score-wait" class="ok" hidden>Waiting for the host to start the next round…</p>
+      </div>
+    </div>
+
+    <!-- ================= NAME POP-UP ================= -->
+    <div class="overlay" id="name-overlay">
+      <div class="modal">
+        <h2 id="name-title">What's your name?</h2>
+        <p id="name-hint" style="color:var(--ink-soft);margin:4px 0 0"></p>
+        <label class="f" for="name-input">Your name</label>
+        <input type="text" id="name-input" maxlength="16" autocomplete="off" />
+        <div class="btn-row">
+          <button class="btn" id="name-cancel">Cancel</button>
+          <button class="btn gold" id="name-ok">Continue</button>
+        </div>
+      </div>
+    </div>
+
+            <script src="client.js"></script>
+  </body>
+</html>
